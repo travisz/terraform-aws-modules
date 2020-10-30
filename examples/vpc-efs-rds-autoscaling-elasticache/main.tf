@@ -294,3 +294,64 @@ resource "aws_route53_record" "redis" {
   ttl     = "300"
   records = [module.redis.endpoint]
 }
+
+# AWS Backup Plan
+resource "aws_iam_role" "backup_plan" {
+  name               = "${local.environment}-${var.application}-backup-plan-role"
+  assume_role_policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": ["sts:AssumeRole"],
+      "Effect": "allow",
+      "Principal": {
+        "Service": ["backup.amazonaws.com"]
+      }
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_iam_role_policy_attachment" "backup_plan_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  role       = aws_iam_role.backup_plan.name
+}
+
+resource "aws_backup_plan" "backup_plan" {
+  name = "${local.environment}-${var.application}-backup-plan"
+
+  rule {
+    rule_name         = "${local.environment}-${var.application}-backup-rule"
+    target_vault_name = aws_backup_vault.backup_vault.name
+    schedule          = "cron(0 5 * * ? *)"
+    lifecycle {
+      delete_after = 7
+    }
+  }
+}
+
+resource "aws_backup_vault" "backup_vault" {
+  name        = "${local.environment}-${var.application}-backup-vault"
+  kms_key_arn = aws_kms_key.backup_vault_key.arn
+}
+
+resource "aws_kms_key" "backup_vault_key" {
+  description         = "KMS Key for AWS Backup Vault"
+  enable_key_rotation = true
+
+  tags = {
+    Name = "${local.environment}-${var.application}-backup-vault-key"
+  }
+}
+
+resource "aws_backup_selection" "backup_selection" {
+  iam_role_arn = aws_iam_role.backup_plan.arn
+  name         = "${local.environment}-${var.application}-backup-plan-selection"
+  plan_id      = aws_backup_plan.backup_plan.id
+
+  resources = [
+    module.efs.volume_arn
+  ]
+}

@@ -10,6 +10,7 @@ The following will build out:
 * AWS Auto-Scaling Group (ASG)
 * Multiple Security Groups
 * Route53 Internal Zone with Multiple Records
+* AWS Backup Plan for EFS
 
 ## Remote State
 A block of the remote state is included in the [main.tf](main.tf:#L26) file as a comment/example. If you would like to use remote state, you will need to run `terraform apply` to the [remote state](../../remote-state) folder prior, plug in the values [here](main.tf#L26) and remove the surrounding comments (`#`).
