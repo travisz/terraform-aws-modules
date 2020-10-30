@@ -255,3 +255,43 @@ module "application" {
     aws_security_group.web.id
   ]
 }
+
+# Private Zone / Internal DNS Records
+module "private_zone" {
+  source      = "./private-zone"
+  application = var.application
+  environment = lower(local.environment)
+  vpc_id      = module.base_network.vpc_id
+}
+
+resource "aws_route53_record" "alb" {
+  zone_id = module.private_zone.private_hosted_zone_id
+  name    = "alb.${local.environment}.local"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [aws_lb.web.dns_name]
+}
+
+resource "aws_route53_record" "efs" {
+  zone_id = module.private_zone.private_hosted_zone_id
+  name    = "efs.${local.environment}.local"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [module.efs.endpoint]
+}
+
+resource "aws_route53_record" "mysql" {
+  zone_id = module.private_zone.private_hosted_zone_id
+  name    = "mysql.${local.environment}.local"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [module.mariadb.endpoint]
+}
+
+resource "aws_route53_record" "redis" {
+  zone_id = module.private_zone.private_hosted_zone_id
+  name    = "redis.${local.environment}.local"
+  type    = "CNAME"
+  ttl     = "300"
+  records = [module.redis.endpoint]
+}
