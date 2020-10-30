@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "instance_role_policy_document" {
       "s3:AbortMultipartUpload"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 
   statement {
@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "instance_role_policy_document" {
       "kms:Decrypt"
     ]
     resources = ["*"]
-    effect = "Allow"
+    effect    = "Allow"
   }
 }
 
@@ -109,8 +109,8 @@ data "aws_ami" "amazon_linux_2" {
   owners      = ["amazon"]
 
   filter {
-    name        = "name"
-    values      = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
 
@@ -154,7 +154,7 @@ resource "aws_launch_template" "template" {
 
   tag_specifications {
     resource_type = "volume"
-     tags         = local.tags
+    tags          = local.tags
   }
 }
 

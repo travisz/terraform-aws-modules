@@ -60,7 +60,7 @@ resource "aws_elasticache_replication_group" "redis_cluster" {
   engine_version                = var.engine_version
   security_group_ids            = [aws_security_group.elasticache_security_group.id]
   at_rest_encryption_enabled    = true
-  transit_encryption_enabled   = true
+  transit_encryption_enabled    = true
 }
 
 resource "aws_ssm_parameter" "redis_endpoint" {

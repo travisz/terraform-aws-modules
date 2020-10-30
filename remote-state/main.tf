@@ -22,7 +22,7 @@ resource "aws_s3_bucket" "state" {
   }
 
   tags = {
-    Name      = "${var.client} Terraform State Bucket"
+    Name = "${var.client} Terraform State Bucket"
   }
 }
 

@@ -30,9 +30,9 @@ variable "subnet_ids" {
 
 ### EC2 Settings ###
 variable "instance_type" {
-  default = "t3.small"
+  default     = "t3.small"
   description = "Size of the instance to use in the ASG (default: t3.small)"
-  type    = string
+  type        = string
 }
 
 variable "additional_policy_arns" {
