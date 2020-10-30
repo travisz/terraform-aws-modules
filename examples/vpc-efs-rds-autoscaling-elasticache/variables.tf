@@ -54,9 +54,9 @@ variable "env_to_vpc_cidr_map" {
 
 variable "env_to_private_network_map" {
   default = {
-    Stage = ["172.19.0.0/24","172.19.1.0/24"]
-    Prod  = ["172.18.0.0/24","172.18.1.0/24"]
-    Dev   = ["172.17.0.0/24","172.17.1.0/24"]
+    Stage = ["172.19.0.0/24", "172.19.1.0/24"]
+    Prod  = ["172.18.0.0/24", "172.18.1.0/24"]
+    Dev   = ["172.17.0.0/24", "172.17.1.0/24"]
   }
   description = "Map of the private subnets"
   type        = map
@@ -64,9 +64,9 @@ variable "env_to_private_network_map" {
 
 variable "env_to_public_network_map" {
   default = {
-    Stage = ["172.19.16.0/24","172.19.17.0/24"]
-    Prod  = ["172.18.16.0/24","172.18.17.0/24"]
-    Dev   = ["172.17.16.0/24","172.17.17.0/24"]
+    Stage = ["172.19.16.0/24", "172.19.17.0/24"]
+    Prod  = ["172.18.16.0/24", "172.18.17.0/24"]
+    Dev   = ["172.17.16.0/24", "172.17.17.0/24"]
   }
   description = "Map of the public subnets"
   type        = map

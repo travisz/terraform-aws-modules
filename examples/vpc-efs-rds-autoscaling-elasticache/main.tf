@@ -5,12 +5,11 @@ provider "aws" {
 # Define Local Variables
 locals {
   environment      = lookup(var.workspace_to_env_map, terraform.workspace, "dev")
-#  elb_ssl_arn      = local.environment == "dev" ? lookup(var.env_to_ssl_arn_map, terraform.workspace, "") : var.env_to_ssl_arn_map[local.environment]
   size             = local.environment == "dev" ? lookup(var.workspace_to_size_map, terraform.workspace, "t3.medium") : var.env_to_size_map[local.environment]
   rds_size         = local.environment == "dev" ? lookup(var.env_to_rds_map, terraform.workspace, "db.t3.medium") : var.env_to_rds_map[local.environment]
   vpc_cidr         = local.environment == "dev" ? lookup(var.env_to_vpc_cidr_map, terraform.workspace, "172.19.0.0/19") : var.env_to_vpc_cidr_map[local.environment]
-  vpc_private_cidr = local.environment == "dev" ? lookup(var.env_to_private_network_map, terraform.workspace, ["172.19.16.0/24","172.19.17.0/24"]) : var.env_to_private_network_map[local.environment]
-  vpc_public_cidr  = local.environment == "dev" ? lookup(var.env_to_public_network_map, terraform.workspace, ["172.19.16.0/24","172.19.17.0/24"]) : var.env_to_public_network_map[local.environment]
+  vpc_private_cidr = local.environment == "dev" ? lookup(var.env_to_private_network_map, terraform.workspace, ["172.19.16.0/24", "172.19.17.0/24"]) : var.env_to_private_network_map[local.environment]
+  vpc_public_cidr  = local.environment == "dev" ? lookup(var.env_to_public_network_map, terraform.workspace, ["172.19.16.0/24", "172.19.17.0/24"]) : var.env_to_public_network_map[local.environment]
 }
 
 data "aws_region" "current" {}
@@ -61,12 +60,12 @@ module "base_network" {
 
 # EFS
 module "efs" {
-  source                  = "../../efs"
-  application             = var.application
-  environment             = local.environment
-  subnet_amount           = "2"
-  subnets                 = module.base_network.private_subnets
-  vpc_id                  = module.base_network.vpc_id
+  source        = "../../efs"
+  application   = var.application
+  environment   = local.environment
+  subnet_amount = "2"
+  subnets       = module.base_network.private_subnets
+  vpc_id        = module.base_network.vpc_id
 
   security_groups = [
     aws_security_group.web.id
@@ -150,7 +149,7 @@ resource "aws_lb" "web" {
   name               = "${local.environment}-${var.application}-ALB"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [
+  security_groups = [
     aws_security_group.alb_security_group.id
   ]
 
